@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="el">
+	<head>
+		<meta charset="utf-8">
+		<title>Minefield - try to avoid the bombs!</title>
+		<link href="minefield.css" rel="stylesheet" type="text/css"/>
+		<script></script>
+	</head>
+	<body>
+		<img id="footer" src="title.jpg." alt="Minefield">
+		<p id="selection">Select difficulty level:</p>
+		<div class="box">
+			<div class="sidebar"></div>
+			<div><input type="button" class="choice" class="choice2" id="easy" value="Easy" onclick="startGame(5)"></input><input type="button" class="choice" class="choice2" id="advanced" value="Advanced" onclick="startGame(8)"></input><input type="button" class="choice" class="choice2" id="professional" value="Professional" onclick="startGame(10)"></input><input type="button" class="choice" id="reset"  value="New Game" onclick="newGame()"></input><input type="button" class="choice" id="about" value="Project Info"></input></div>
+			<div class="sidebar"></div>
+		</div>
+		<div id="box3">
+			<div id="center">
+				<div id="side1"><p id="side11"><b><u>Game Info:</u></b></p><p>Your goal is to choose ten (10) blocks of the minefield without steping on a bomb.</br></br>You only have two chances to fail, third strike finishes the game.<p id="side12">Good luck!</p></div>
+				<div id="box2">
+					<p id="message"></p>
+					<img src="girl.jpg" alt="playGame" id="screen2">
+					<div id="screen">
+						<div id="r0"><img src="1.jpg" class="field" value="1" onclick="play(1)"><img src="2.jpg" class="field" value="2" onclick="play(2)"><img src="3.jpg" class="field" value="3" onclick="play(3)"><img src="4.jpg" class="field" value="4" onclick="play(4)"><img src="5.jpg" class="field" value="5" onclick="play(5)"><img src="6.jpg" class="field" value="6" onclick="play(6)"></div>
+						<div id="r1"><img src="7.jpg" class="field" value="7" onclick="play(7)"><img src="8.jpg" class="field" value="8" onclick="play(8)"><img src="9.jpg" class="field" value="9" onclick="play(9)"><img src="10.jpg" class="field" value="10" onclick="play(10)"><img src="11.jpg" class="field" value="11" onclick="play(11)"><img src="12.jpg" class="field" value="12" onclick="play(12)"></div>
+						<div id="r2"><img src="13.jpg" class="field" value="13" onclick="play(13)"><img src="14.jpg" class="field" value="14" onclick="play(14)"><img src="15.jpg" class="field" value="15" onclick="play(15)"><img src="16.jpg" class="field" value="16" onclick="play(16)"><img src="17.jpg" class="field" value="17" onclick="play(17)"><img src="18.jpg" class="field" value="18" onclick="play(18)"></div>
+						<div id="r3"><img src="19.jpg" class="field" value="19" onclick="play(19)"><img src="20.jpg" class="field" value="20" onclick="play(20)"><img src="21.jpg" class="field" value="21" onclick="play(21)"><img src="22.jpg" class="field" value="22" onclick="play(22)"><img src="23.jpg" class="field" value="23" onclick="play(23)"><img src="24.jpg" class="field" value="24" onclick="play(24)"></div>
+						<div id="r4"><img src="25.jpg" class="field" value="25" onclick="play(25)"><img src="26.jpg" class="field" value="26" onclick="play(26)"><img src="27.jpg" class="field" value="27" onclick="play(27)"><img src="28.jpg" class="field" value="28" onclick="play(28)"><img src="29.jpg" class="field" value="29" onclick="play(29)"><img src="30.jpg" class="field" value="30" onclick="play(30)"></div>
+						<div id="r5"><img src="31.jpg" class="field" value="31" onclick="play(31)"><img src="32.jpg" class="field" value="32" onclick="play(32)"><img src="33.jpg" class="field" value="33" onclick="play(33)"><img src="34.jpg" class="field" value="34" onclick="play(34)"><img src="35.jpg" class="field" value="35" onclick="play(35)"><img src="36.jpg" class="field" value="36" onclick="play(36)"></div>
+					</div>
+				</div>
+				<div id="side2">
+					<p id="side21"><b>Current Score:</b></p>
+					<p id="side26"></p>
+					<p id="side23"></p>
+					<p id="side24"></p>
+					<p id="side25"></p>
+					<input type="button" id="side22" value="Show Minefield"></input>
+				</div>
+			</div>
+		</div>
+		<div id="reset1">
+				
+		</div>		
+			<div><h3>Project by Shery Panagiotaki @copyright 2022</h3>
+			<h4>contact via e-mail: sherypanagiotaki@yahoo.com</h4></div>
+		</div>
+		<script>
+			document.getElementById("screen2").addEventListener("click", showScreen2);
+			document.getElementById("about").addEventListener("click", aboutGame);
+			
+			var bombs=0, miss=0, tries=3, blocks=10, y=[];
+			const trapField=[bombs];			
+
+			function startGame(x){ 
+				document.getElementById("message").style.visibility = "hidden";
+				showInfo();
+				showScreen();
+				bombs=x;
+				tries=3;
+				blocks=10;
+				for(let i=0; i<bombs; i++){  //γεννήτρια τυχαίων αριθμών μεταξύ 1 και 36, εδώ θα τοποθετηθούν οι νάρκες.
+					trapField[i]=Math.floor(1+Math.random() * 36);
+					for(j=0; j<i; j++){  //debugging, για την περίπτωση να δώσει η γεννήτρια ίδιο τυχαίο αριθμό με κάποιον προηγούμενο.
+						while(trapField[i]==trapField[j]){
+							trapField[i]=Math.floor(1+Math.random() * 36);						
+						}					
+					}
+				}
+				showScore();
+			}
+			
+			function play(a){ 
+				let p=document.getElementsByClassName("field")[a-1].src;
+				let y=trapField.sort();
+				for(i=0; i<bombs; i++){	
+					if(a==y[i]){
+						document.getElementsByClassName("field")[a-1].src="blast.jpg";
+						miss++;
+						tries--;
+						break;					
+					}else{
+						if(i<bombs-1){
+							continue;
+						}else{
+							document.getElementsByClassName("field")[a-1].src="ok_image.jpg";
+							blocks--;
+							break;
+						}	
+					}
+				}
+				showScore();
+				if(tries==0){
+					document.getElementById("side26").innerHTML="<b>Oh, no!!! You just lost the game... </b>";
+					document.getElementById("side24").style.visibility="hidden";
+					document.getElementById("side23").style.visibility="hidden";
+					document.getElementById("side25").style.visibility="hidden";
+					document.getElementById("side22").style.display="block";
+					document.getElementById("side22").addEventListener("click", function(){
+						showField();
+					});
+				}
+				if(blocks==0){
+					document.getElementById("side26").innerHTML="<b>Congratulations, you won!!!"+"</br>"+"Great job, well done!!! </b>";
+					document.getElementById("side24").style.visibility="hidden";
+					document.getElementById("side23").style.visibility="hidden";
+					document.getElementById("side25").style.visibility="hidden";
+					document.getElementById("side22").style.display="block";
+					document.getElementById("side22").addEventListener("click", function(){
+						showField();
+					});
+				}
+			}
+			
+			function showField(){	
+				for(let i=1; i<37; i++){
+					for(let j=0; j<bombs; j++){
+						if(i==trapField[j]){
+							document.getElementsByClassName("field")[i-1].src="blast.jpg";
+							break;
+						}else{
+							document.getElementsByClassName("field")[i-1].src="ok_image.jpg";
+						}
+					}
+				}
+			}
+
+
+			function showInfo(){	
+				document.getElementById("side1").style.visibility="visible";
+				document.getElementById("side21").style.visibility="visible";
+			}
+			
+			function hideInfo(){	
+				document.getElementById("side21").style.visibility="hidden";
+				document.getElementById("side1").style.visibility="hidden";
+				document.getElementById("side23").style.visibility="hidden";
+				document.getElementById("side24").style.visibility="hidden";
+				document.getElementById("side25").style.visibility="hidden";
+				document.getElementById("side26").style.visibility="hidden";
+			}
+			
+			function showScreen(){	
+				document.getElementById("screen").style.display = "block";
+				document.getElementById("screen2").style.display = "none";				
+			}
+			
+			function hideScreen(){	
+				document.getElementById("screen").style.display = "none";
+				document.getElementById("screen2").style.display = "block";
+			}
+			function showScreen2(){	
+				document.getElementById("message").style.visibility = "visible";
+				document.getElementById("message").innerHTML = "<b>Select difficulty level from above:</b>";
+			}
+			
+			function showScore(){					
+				document.getElementById("side21").innerHTML='<b>Current Score:</b>';
+				document.getElementById("side26").style.visibility="visible";
+				document.getElementById("side23").style.visibility="visible";
+				document.getElementById("side24").style.visibility="visible";
+				document.getElementById("side25").style.visibility="visible";
+				console.log("bombs= "+ +bombs);
+				document.getElementById("side26").innerHTML="<b>Hidden bombs:    </b>"+ +bombs;
+				document.getElementById("side23").innerHTML="<b>Failures:    </b>\t"+ +miss;
+				document.getElementById("side24").innerHTML="<b>Tries remaining:    </b>\t"+ +tries;
+				document.getElementById("side25").innerHTML="<b>Blocks to win:    </b>\t"+ +blocks;
+			}
+			
+			function newGame(){		
+				location.reload();	//επαναφόρτωση σελίδας, μηδενίζει τα πάντα και ξεκινά το παιχνίδι από την αρχική οθόνη.
+			}
+			
+			function aboutGame(){	
+				alert("Programmed, designed and developed by Shery Panagiotaki,\n@copyright 2022\n\nBuilt with HTML, CSS and Javascript\n\nContact via e-mail: sherypanagiotaki@yahoo.com");
+			}
+	
+		</script>
+	</body>
+</html>
